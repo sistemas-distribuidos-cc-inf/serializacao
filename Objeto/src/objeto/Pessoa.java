@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client;
+package objeto;
 
 import java.io.Serializable;
 
@@ -11,8 +11,8 @@ import java.io.Serializable;
  *
  * @author Pratos
  */
-public class Pessoa {
-      private String nome;
+public class Pessoa implements Serializable{
+    private String nome;
     private String sobrenome;
     private int idade;
 

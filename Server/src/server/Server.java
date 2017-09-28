@@ -4,9 +4,10 @@
  * and open the template in the editor.
  */
 package server;
-
+import objeto.Pessoa;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import server.Pessoa;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,35 +45,33 @@ public class Server {
         s.close();
     }
     
-    private void trataConexao(Socket socket)throws IOException 
+    private void trataConexao(Socket socket)throws IOException, ClassNotFoundException 
     {
       //protocolo da aplicacao
       //criar stream de entrada e saida
         // tratar a conversacao entre client e servidor
         try{
-        ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+        //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
         
          Pessoa pessoa = new Pessoa();
-         pessoa.setNome("Lucas");
-         pessoa.setSobrenome("Prates");
-         pessoa.setIdade(23);
-        
+         pessoa = (Pessoa) input.readObject();
+         input.close();
         try {
-            FileOutputStream out = new FileOutputStream("pessoa");
-            ObjectOutputStream objOut = new ObjectOutputStream(out);
+            FileInputStream obj = new FileInputStream("pessoa.txt");
+            ObjectInputStream des = new ObjectInputStream(obj);
+            pessoa = (Pessoa) des.readObject();
+            des.close();
+            input.close();
             
-            objOut.writeObject(pessoa);
-            objOut.close();
-        output.writeObject(objOut);
         
        
         System.out.println("Mensagem recebida...");
        
-        output.flush();
+       // output.flush();
         
-        input.close();
-        output.close();
+        
+        //output.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -89,7 +88,7 @@ public class Server {
             fechaSocket(socket);
         }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         
         
          try{
