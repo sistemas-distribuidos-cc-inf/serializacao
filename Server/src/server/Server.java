@@ -50,61 +50,50 @@ public class Server {
       //protocolo da aplicacao
       //criar stream de entrada e saida
         // tratar a conversacao entre client e servidor
+      
         try{
-        //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-        
-         Pessoa pessoa = new Pessoa();
-         pessoa = (Pessoa) input.readObject();
-         input.close();
-        try {
-            FileInputStream obj = new FileInputStream("pessoa.txt");
-            ObjectInputStream des = new ObjectInputStream(obj);
-            pessoa = (Pessoa) des.readObject();
-            des.close();
-            input.close();
-            
-        
-       
-        System.out.println("Mensagem recebida...");
-       
-       // output.flush();
-        
-        
-        //output.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-       
-        
+          ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+         
+                Pessoa pessoa;
+                pessoa = (Pessoa) input.readObject();
+             FileOutputStream objeto = new FileOutputStream("pessoa.ser"); 
+             ObjectOutputStream saida = new ObjectOutputStream(objeto); 
+                 saida.writeObject(pessoa);
+                 System.out.println("Object received = " + pessoa.getNome());
+                 System.out.println("Object received = " + pessoa.getSobrenome());
+                 System.out.println("Object received = " + pessoa.getIdade());
+             saida.close();
+             objeto.close();
+             input.close();
+               
         }catch(IOException e){
+            e.printStackTrace();
             System.out.println("Problema no tratamento de conexão com o cliente " +socket.getInetAddress());
             System.out.println("Error: " +e.getMessage());
         }finally{
-            
+          
             fechaSocket(socket);
         }
+    
     }
-    public static void main(String[] args) throws ClassNotFoundException {
+    public static void main(String[] args) throws ClassNotFoundException, IOException {
         
         
-         try{
+         //try{
             //inicializando os metodos na porta 5555
         Server server = new Server();
-        System.out.println("Aguardando conexeao");
-        server.criarServerSocket(5555);
+        System.out.println("Aguardando conexao");
+        server.criarServerSocket(12345);
         while(true){
         Socket socket = server.esperaConexao();//protocolo
-        System.out.println("Cliente conectado");
+        System.out.println("Cliente conectado" +socket.getInetAddress());
         server.trataConexao(socket);
         System.out.println("Cliente finalizado");
         }
-        }catch(IOException e){
+        
+        //}catch(IOException e){
             
-        }
+        //}
             
     }
     
